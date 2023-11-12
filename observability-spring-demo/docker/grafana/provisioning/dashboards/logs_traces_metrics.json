@@ -86,9 +86,11 @@
                         "type": "tempo",
                         "uid": "tempo"
                     },
-                    "query": "$traceID",
-                    "queryType": "traceId",
-                    "refId": "A"
+                    "refId": "A",
+                    "queryType": "traceql",
+                    "limit": 20,
+                    "tableType": "traces",
+                    "query": "$traceID"
                 }
             ],
             "title": "Trace View for trace with id $traceID",

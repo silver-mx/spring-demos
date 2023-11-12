@@ -18,8 +18,8 @@ public class ObservabilitySpringDemoApplication {
     public static void main(String[] args) {
         new SpringApplicationBuilder()
                 .parent(ParentConfig.class).web(NONE)
-                .child(ClientConfig.class).web(SERVLET)
-                .sibling(ServerConfig.class).web(SERVLET)
+                .child(ServerConfig.class).web(SERVLET)
+                .sibling(ClientConfig.class).web(SERVLET)
                 .run(args);
     }
 

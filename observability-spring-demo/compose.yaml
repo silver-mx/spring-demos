@@ -1,10 +1,10 @@
 services:
-  zipkin:
-    image: 'openzipkin/zipkin:latest'
-    ports:
-      - '9411:9411'
+#  zipkin:
+#    image: 'openzipkin/zipkin:latest'
+#    ports:
+#      - '9411:9411'
   tempo:
-    image: grafana/tempo
+    image: 'grafana/tempo'
     extra_hosts: [ 'host.docker.internal:host-gateway' ]
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
@@ -13,8 +13,10 @@ services:
     ports:
       - "14268"  # jaeger ingest
       - "9411:9411" # zipkin
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true # port 14268 has issues
   loki:
-    image: grafana/loki
+    image: 'grafana/loki'
     extra_hosts: [ 'host.docker.internal:host-gateway' ]
     command: [ "-config.file=/etc/loki/local-config.yaml" ]
     ports:
@@ -25,7 +27,7 @@ services:
       - JAEGER_SAMPLER_TYPE=const
       - JAEGER_SAMPLER_PARAM=1
   prometheus:
-    image: prom/prometheus
+    image: 'prom/prometheus'
     extra_hosts: [ 'host.docker.internal:host-gateway' ]
     command:
       - --enable-feature=exemplar-storage

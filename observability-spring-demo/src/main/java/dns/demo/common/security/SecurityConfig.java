@@ -1,4 +1,4 @@
-package dns.demo.client.security;
+package dns.demo.common.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,16 +10,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
 @EnableWebSecurity
+@Configuration(proxyBeanMethods = false)
 public class SecurityConfig {
 
-    /**
-     * Observation information is added for spring security as well, e.g. how long it wakes the
-     * security filtering process.
-     *
-     * These new metrics are added only for http://localhost:8080/api/posts
-     */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -27,15 +21,15 @@ public class SecurityConfig {
                     auth.requestMatchers("/actuator/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
-                .formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(
-                User.withUsername("silvermx")
-                        .password("{noop}pass123")
+                User.withUsername("user")
+                        .password("{noop}password")
                         .roles("USER")
                         .build()
         );

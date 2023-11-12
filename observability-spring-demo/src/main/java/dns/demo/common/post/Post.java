@@ -1,4 +1,4 @@
-package dns.demo.client.post;
+package dns.demo.common.post;
 
 public record Post(Integer id, Integer userId, String title, String body) {
 }
