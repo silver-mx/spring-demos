@@ -1,4 +1,4 @@
-package dns.demo.security;
+package dns.demo.client.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,6 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/").permitAll();
                     auth.requestMatchers("/actuator/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
@@ -33,7 +32,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(
                 User.withUsername("silvermx")
                         .password("{noop}pass123")

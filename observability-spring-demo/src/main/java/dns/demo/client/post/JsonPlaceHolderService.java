@@ -1,4 +1,4 @@
-package dns.demo.post;
+package dns.demo.client.post;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;

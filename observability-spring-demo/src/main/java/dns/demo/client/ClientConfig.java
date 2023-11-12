@@ -1,14 +1,14 @@
-package dns.demo.config;
+package dns.demo.client;
 
-import dns.demo.post.JsonPlaceHolderService;
-import dns.demo.post.Post;
-import io.micrometer.observation.Observation;
+import dns.demo.client.post.JsonPlaceHolderService;
+import dns.demo.client.post.Post;
+import dns.demo.client.security.SecurityConfig;
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.annotation.Observed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
@@ -16,8 +16,11 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import java.util.List;
 
 @Slf4j
+@EnableAutoConfiguration
+@PropertySource({"classpath:application-common.properties", "classpath:application-client.properties"})
+@ComponentScan
 @Configuration
-public class AppConfig {
+public class ClientConfig {
 
     @Bean
     JsonPlaceHolderService jsonPlaceHolderService() {
