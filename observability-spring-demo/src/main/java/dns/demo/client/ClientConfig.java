@@ -32,19 +32,21 @@ public class ClientConfig {
     public static final String POST_SERVICE_FIND_ALL_CONTEXT_NAME = "posts.load-all-posts";
 
     @Bean
-    PostClient postClient() {
+    PostClient postClient(ObservationRegistry observationRegistry) {
         RestClient restClient = RestClient.builder().baseUrl("http://localhost:8081/api/").requestInterceptor((request, body, execution) -> {
-            if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attribs) {
-                String authValue = attribs.getRequest().getHeader(AUTHORIZATION);
-                request.getHeaders().set(AUTHORIZATION, authValue);
-                log.info("Instrumenting server call with current request authorization[{}]", authValue);
-            } else {
-                request.getHeaders().setBasicAuth("user", "password");
-                log.info("Instrumenting server call with default authorization");
-            }
+                    if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attribs) {
+                        String authValue = attribs.getRequest().getHeader(AUTHORIZATION);
+                        request.getHeaders().set(AUTHORIZATION, authValue);
+                        log.info("Instrumenting server call with current request authorization[{}]", authValue);
+                    } else {
+                        request.getHeaders().setBasicAuth("user", "password");
+                        log.info("Instrumenting server call with default authorization");
+                    }
 
-            return execution.execute(request, body);
-        }).build();
+                    return execution.execute(request, body);
+                })
+                .observationRegistry(observationRegistry)
+                .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
