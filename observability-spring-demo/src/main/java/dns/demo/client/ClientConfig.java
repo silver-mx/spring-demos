@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration;
 import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
@@ -21,7 +22,7 @@ import java.util.List;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
-@EnableAutoConfiguration(exclude = BraveAutoConfiguration.class)
+@EnableAutoConfiguration(exclude = {BraveAutoConfiguration.class, SpringApplicationAdminJmxAutoConfiguration.class})
 @PropertySource("classpath:application-client.properties")
 @ComponentScan
 @Import(CommonConfig.class)
