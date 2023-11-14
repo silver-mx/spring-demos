@@ -3,6 +3,7 @@ package dns.demo.client;
 import dns.demo.client.post.PostClient;
 import dns.demo.common.CommonConfig;
 import dns.demo.common.post.Post;
+import dns.demo.server.ServerConfig;
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.annotation.Observed;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -34,7 +36,8 @@ public class ClientConfig {
     @Bean
     PostClient postClient(ObservationRegistry observationRegistry) {
         RestClient restClient = RestClient.builder().baseUrl("http://localhost:8081/api/").requestInterceptor((request, body, execution) -> {
-                    if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attribs) {
+                    if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attribs
+                            && nonNull(attribs.getRequest().getHeader(AUTHORIZATION))) {
                         String authValue = attribs.getRequest().getHeader(AUTHORIZATION);
                         request.getHeaders().set(AUTHORIZATION, authValue);
                         log.info("Instrumenting server call with current request authorization[{}]", authValue);
