@@ -1,0 +1,7 @@
+### Fetch all bugs
+GET http://localhost:8080/bugs
+Accept: application/json
+
+### Fetch a specific bug
+GET http://localhost:8080/bugs/2345
+Accept: application/json
