@@ -3,5 +3,5 @@ GET http://localhost:8080/bugs
 Accept: application/json
 
 ### Fetch a specific bug
-GET http://localhost:8080/bugs/2345
+GET http://localhost:8080/bugs/1234
 Accept: application/json
