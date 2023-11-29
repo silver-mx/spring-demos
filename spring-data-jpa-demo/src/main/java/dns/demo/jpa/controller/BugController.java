@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 public class BugController {
 
-    private final  BugService bugService;
+    private final BugService bugService;
 
     public BugController(BugService bugService) {
         this.bugService = bugService;
