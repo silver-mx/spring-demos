@@ -1,7 +1,10 @@
 package dns.demo.jpa.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
@@ -10,14 +13,17 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
+@NamedEntityGraph(name = "graph.bug.complete", attributeNodes = {
+        @NamedAttributeNode("reportedBy"),
+        @NamedAttributeNode("assignedTo"),
+        @NamedAttributeNode("verifiedBy"),
+        @NamedAttributeNode("tags")/*,
+        @NamedAttributeNode("screenshots")*/
+})
 @Entity
 @Table(name = "bugs")
 public class Bug {

@@ -2,6 +2,7 @@ package dns.demo.jpa.controller;
 
 import dns.demo.jpa.entities.Bug;
 import dns.demo.jpa.services.BugService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,12 @@ public class BugController {
     public List<Bug> getAllBugOptimizedBlazed() {
         List<Bug> bugs = bugService.getAllBugOptimizedBlazed(
                 Pageable.ofSize(20).withPage(0));
+        return bugs;
+    }
+
+    @GetMapping("bugs-entity-graph")
+    public List<Bug> findAllUsingNamedEntityGraphs() {
+        List<Bug> bugs = bugService.findAllUsingNamedEntityGraphs(PageRequest.of(0, 20));
         return bugs;
     }
 }

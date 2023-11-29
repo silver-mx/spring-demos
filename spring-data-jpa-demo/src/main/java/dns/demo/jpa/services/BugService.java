@@ -37,4 +37,10 @@ public class BugService {
     public List<Bug> getAllBugsWithReferences() {
         return null;
     }
+
+    public List<Bug> findAllUsingNamedEntityGraphs(Pageable pageable) {
+        List<Bug> bugsWithoutScreenshot = bugRepository.findAllWithTagsBy();
+
+        return bugsWithoutScreenshot;
+    }
 }

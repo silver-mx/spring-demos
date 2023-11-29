@@ -2,8 +2,10 @@ package dns.demo.jpa.repositories.impl;
 
 import dns.demo.jpa.entities.Bug;
 import dns.demo.jpa.repositories.CustomBugRepository;
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.jpa.SpecHints;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 

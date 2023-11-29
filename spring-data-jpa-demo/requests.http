@@ -17,3 +17,7 @@ Accept: application/json
 ### Fetch all bugs - Optimized JPA query
 GET http://localhost:8080/test/bugs-optimized-jpa
 Accept: application/json
+
+### Fetch all bugs - Entity Graph
+GET http://localhost:8080/test/bugs-entity-graph
+Accept: application/json

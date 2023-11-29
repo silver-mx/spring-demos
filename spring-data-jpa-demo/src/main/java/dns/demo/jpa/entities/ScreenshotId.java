@@ -8,9 +8,6 @@ import org.hibernate.Hibernate;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)

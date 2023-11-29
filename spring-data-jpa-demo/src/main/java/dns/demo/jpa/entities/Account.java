@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
