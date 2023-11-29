@@ -1,12 +1,15 @@
 package dns.demo.jpa.services;
 
 import dns.demo.jpa.entities.Bug;
+import dns.demo.jpa.entities.Screenshot;
 import dns.demo.jpa.repositories.BugRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,8 +42,12 @@ public class BugService {
     }
 
     public List<Bug> findAllUsingNamedEntityGraphs(Pageable pageable) {
-        List<Bug> bugsWithoutScreenshot = bugRepository.findAllWithTagsBy();
+        List<Bug> bugsWithTags = bugRepository.findAllWithTagsBy();
+        Map<Long, List<Screenshot>> idToScreenshotsMap = bugRepository.findAllWithScreenshotsBy().stream().collect(Collectors.toMap(Bug::getId, Bug::getScreenshots));
 
-        return bugsWithoutScreenshot;
+        // Add screenshots to the bug list
+        bugsWithTags.forEach(b -> b.setScreenshots(idToScreenshotsMap.get(b.getId())));
+
+        return bugsWithTags;
     }
 }

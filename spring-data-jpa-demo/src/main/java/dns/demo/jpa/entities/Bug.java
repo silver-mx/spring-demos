@@ -1,7 +1,6 @@
 package dns.demo.jpa.entities;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,12 +16,17 @@ import java.util.List;
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@NamedEntityGraph(name = "graph.bug.complete", attributeNodes = {
-        @NamedAttributeNode("reportedBy"),
-        @NamedAttributeNode("assignedTo"),
-        @NamedAttributeNode("verifiedBy"),
-        @NamedAttributeNode("tags")/*,
-        @NamedAttributeNode("screenshots")*/
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "graph.bug.with-tags", attributeNodes = {
+                @NamedAttributeNode("reportedBy"),
+                @NamedAttributeNode("assignedTo"),
+                @NamedAttributeNode("verifiedBy"),
+                @NamedAttributeNode("status"),
+                @NamedAttributeNode("tags")
+        }),
+        @NamedEntityGraph(name = "graph.bug.with-screenshots", attributeNodes = {
+                @NamedAttributeNode("screenshots")
+        })
 })
 @Entity
 @Table(name = "bugs")
