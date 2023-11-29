@@ -1,6 +1,7 @@
 package dns.demo.jpa.repositories;
 
 import dns.demo.jpa.entities.Bug;
+import dns.demo.jpa.entities.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,13 +29,16 @@ public interface BugRepository extends JpaRepository<Bug, Long>, CustomBugReposi
             countQuery = "SELECT COUNT(bug) FROM Bug bug")
     Page<Bug> findAllBugsWithLazyRelations(Pageable pageable);
 
-    @Query("SELECT bug FROM Bug bug JOIN FETCH bug.reportedBy " +
-            "LEFT JOIN FETCH bug.assignedTo " +
-            "LEFT JOIN FETCH bug.verifiedBy " +
-            "LEFT JOIN FETCH bug.tags " +
-            "LEFT JOIN FETCH bug.screenshots " +
-            "WHERE bug.id = :id")
-    Optional<Bug> findBugWithLazyRelations(@Param("id") Long id);
+    /* We are splitting one query into two (findBugWithAllRelationsExceptTags, findBugWithTagsAndWithoutOtherRelations)
+     * to deal with MultipleBagFetchException.
+     * */
+    @Query("select b from Bug b join fetch b.status join fetch b.reportedBy left join fetch b.assignedTo " +
+            "left join fetch b.verifiedBy left join fetch b.screenshots " +
+            "where b.id = :id")
+    Optional<Bug> findBugWithAllRelationsExceptTags(@Param("id") Long id);
+
+    @Query("select b from Bug b left join fetch b.tags where b.id = :id")
+    Optional<Bug> findBugWithTagsAndWithoutOtherRelations(@Param("id") Long id);
 
     @Override
     default List<Bug> findAll() {
@@ -53,6 +57,11 @@ public interface BugRepository extends JpaRepository<Bug, Long>, CustomBugReposi
 
     @Override
     default Optional<Bug> findById(Long id) {
-        return findBugWithLazyRelations(id);
+        return  findBugWithAllRelationsExceptTags(id).map(b -> {
+            List<Tag> tags = findBugWithTagsAndWithoutOtherRelations(b.getId())
+                    .orElseThrow(() -> new IllegalStateException("The bug must exist")).getTags();
+            b.setTags(tags);
+            return b;
+        });
     }
 }

@@ -41,7 +41,7 @@ public class CustomBugRepositoryImpl implements CustomBugRepository {
         List<Bug> bugs = getAllBugsWithoutTags(pageable);
 
         final Map<Long, Bug> mapWithTags = entityManager.createQuery("""
-                        select distinct b from Bug b
+                        select b from Bug b
                         left join fetch b.tags
                         where b in :bugs
                         """, Bug.class)
