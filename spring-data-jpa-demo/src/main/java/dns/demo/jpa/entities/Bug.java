@@ -2,11 +2,15 @@ package dns.demo.jpa.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -49,7 +53,7 @@ public class Bug {
     @JoinColumn(name = "verified_by")
     private Account verifiedBy;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "status", nullable = false)
     private BugStatus status;
@@ -59,5 +63,15 @@ public class Bug {
 
     @Column(name = "hours", precision = 9)
     private BigDecimal hours;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bug", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private List<Tag> tags;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bug", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private List<Screenshot> screenshots;
 
 }

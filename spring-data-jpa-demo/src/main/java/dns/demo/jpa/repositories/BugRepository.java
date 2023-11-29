@@ -14,16 +14,26 @@ import java.util.Optional;
 
 @Repository
 //@RepositoryRestResource(collectionResourceRel = "bugs", path = "bugs")
-public interface BugRepository extends JpaRepository<Bug, Long> {
+public interface BugRepository extends JpaRepository<Bug, Long>, CustomBugRepository {
 
     /**
      * These are 2 examples how to load lazy relations in JPA. This can be useful when working with Spring Data REST.
      */
-    @Query(value = "SELECT bug FROM Bug bug LEFT JOIN FETCH bug.reportedBy LEFT JOIN FETCH bug.assignedTo LEFT JOIN FETCH bug.verifiedBy",
+    @Query(value = "SELECT bug FROM Bug bug " +
+            "LEFT JOIN FETCH bug.reportedBy " +
+            "LEFT JOIN FETCH bug.assignedTo " +
+            "LEFT JOIN FETCH bug.verifiedBy " +
+            "LEFT JOIN FETCH bug.tags " +
+            "LEFT JOIN FETCH bug.screenshots",
             countQuery = "SELECT COUNT(bug) FROM Bug bug")
     Page<Bug> findAllBugsWithLazyRelations(Pageable pageable);
 
-    @Query("SELECT bug FROM Bug bug JOIN FETCH bug.reportedBy LEFT JOIN FETCH bug.assignedTo LEFT JOIN FETCH bug.verifiedBy WHERE bug.id = :id")
+    @Query("SELECT bug FROM Bug bug JOIN FETCH bug.reportedBy " +
+            "LEFT JOIN FETCH bug.assignedTo " +
+            "LEFT JOIN FETCH bug.verifiedBy " +
+            "LEFT JOIN FETCH bug.tags " +
+            "LEFT JOIN FETCH bug.screenshots " +
+            "WHERE bug.id = :id")
     Optional<Bug> findBugWithLazyRelations(@Param("id") Long id);
 
     @Override

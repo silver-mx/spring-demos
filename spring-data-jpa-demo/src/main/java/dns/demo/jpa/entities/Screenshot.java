@@ -1,5 +1,6 @@
 package dns.demo.jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -17,6 +18,7 @@ public class Screenshot {
     @EmbeddedId
     private ScreenshotId id;
 
+    @JsonIgnore
     @MapsId("bugId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)

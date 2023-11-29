@@ -1,7 +1,19 @@
-### Fetch all bugs
-GET http://localhost:8080/bugs
+### Spring Data REST - Fetch all bugs
+GET http://localhost:8080/bugs?page=1&size=5
+Accept: application/json
+
+### Spring Data REST - Fetch a specific bug
+GET http://localhost:8080/bugs/1234
 Accept: application/json
 
 ### Fetch a specific bug
-GET http://localhost:8080/bugs/1234
+GET http://localhost:8080/test/bugs/1234
+Accept: application/json
+
+### Fetch all bugs - Throws MultipleBagFetchException
+GET http://localhost:8080/test/bugs
+Accept: application/json
+
+### Fetch all bugs - Optimized JPA query
+GET http://localhost:8080/test/bugs-optimized-jpa
 Accept: application/json
