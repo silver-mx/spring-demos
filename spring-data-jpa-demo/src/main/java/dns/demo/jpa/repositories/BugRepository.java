@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface BugRepository extends JpaRepository<Bug, Long>, CustomBugRepository {
 
     /**
-     * These are 2 examples how to load lazy relations in JPA. This can be useful when working with Spring Data REST.
+     * Throws MultipleBagFetchException as there are two @OneToMany relations (tags and screenshots).
      */
     @Query(value = "SELECT bug FROM Bug bug " +
             "LEFT JOIN FETCH bug.reportedBy " +
@@ -41,7 +41,7 @@ public interface BugRepository extends JpaRepository<Bug, Long>, CustomBugReposi
 
     @Override
     default List<Bug> findAll() {
-        return findAll(Pageable.unpaged()).getContent();
+        return findAllBugsWithLazyRelations(Pageable.unpaged()).getContent();
     }
 
     @Override

@@ -77,6 +77,8 @@ public class CustomBugRepositoryImpl implements CustomBugRepository {
                 .getResultList();*/
 
         // Step 1. Fetch all the bugs without @OneToMany relations.
+        int firstResult = pageable.isUnpaged() ? 0 : (int) pageable.getOffset();
+        int maxResults = pageable.isUnpaged() ? Integer.MAX_VALUE : pageable.getPageSize();
         List<Bug> bugs = entityManager.createQuery("""
                         select b from Bug b
                         join fetch b.status
@@ -84,8 +86,8 @@ public class CustomBugRepositoryImpl implements CustomBugRepository {
                         left join fetch b.assignedTo
                         left join fetch b.verifiedBy
                         """, Bug.class)
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
+                .setFirstResult(firstResult)
+                .setMaxResults(maxResults)
                 .getResultList();
 
         // Step 2. Fetch the @OneToMany screenshot relation by using the bug ids.
