@@ -1,18 +1,16 @@
 package dns.demo.jpa.repositories.impl;
 
+import com.blazebit.persistence.CriteriaBuilderFactory;
 import dns.demo.jpa.entities.Bug;
 import dns.demo.jpa.repositories.CustomBugRepository;
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.jpa.SpecHints;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -21,9 +19,11 @@ import static java.util.stream.Collectors.toMap;
 public class CustomBugRepositoryImpl implements CustomBugRepository {
 
     private final EntityManager entityManager;
+    private final CriteriaBuilderFactory criteriaBuilderFactory;
 
-    public CustomBugRepositoryImpl(EntityManager entityManager) {
+    public CustomBugRepositoryImpl(EntityManager entityManager, CriteriaBuilderFactory criteriaBuilderFactory) {
         this.entityManager = entityManager;
+        this.criteriaBuilderFactory = criteriaBuilderFactory;
     }
 
     /**
@@ -110,6 +110,20 @@ public class CustomBugRepositoryImpl implements CustomBugRepository {
 
     @Override
     public List<Bug> findAllWithMultipleOneToManyRelationsBlazePersistence(Pageable pageable) {
-        throw new UnsupportedOperationException("TODO");
+        int firstResult = pageable.isUnpaged() ? 0 : (int) pageable.getOffset();
+        int maxResults = pageable.isUnpaged() ? Integer.MAX_VALUE : pageable.getPageSize();
+
+        List<Bug> bugs = criteriaBuilderFactory.create(entityManager, Bug.class, "b")
+                .innerJoinFetch("status", "st")
+                .innerJoinFetch("reportedBy", "r")
+                .leftJoinFetch("assignedTo", "a")
+                .leftJoinFetch("verifiedBy", "v")
+                .leftJoinFetch("screenshots", "sc")
+                .leftJoinFetch("tags", "t")
+                .setFirstResult(firstResult)
+                .setMaxResults(maxResults)
+                .getResultList();
+
+        return bugs;
     }
 }
