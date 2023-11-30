@@ -67,8 +67,8 @@ public interface BugRepository extends JpaRepository<Bug, Long>, CustomBugReposi
     }
 
     @EntityGraph(value = "graph.bug.with-tags")
-    List<Bug> findAllWithTagsBy();
+    List<Bug> findAllWithTagsBy(Pageable pageable);
 
     @EntityGraph(value = "graph.bug.with-screenshots")
-    List<Bug> findAllWithScreenshotsBy();
+    List<Bug> findAllWithScreenshotsBy(Pageable pageable);
 }

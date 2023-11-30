@@ -1,13 +1,12 @@
 package dns.demo.jpa.entities;
 
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -75,12 +74,10 @@ public class Bug {
     private BigDecimal hours;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bug", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Fetch(FetchMode.SUBSELECT)
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     private List<Tag> tags;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bug", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Fetch(FetchMode.SUBSELECT)
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     private List<Screenshot> screenshots;
 

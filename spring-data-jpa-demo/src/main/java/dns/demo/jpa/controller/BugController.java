@@ -48,9 +48,9 @@ public class BugController {
     }
 
     @GetMapping("bugs-entity-graph")
-    public List<Bug> findAllUsingNamedEntityGraphs(@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
+    public Page<Bug> findAllUsingNamedEntityGraphs(@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
                                                    @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
-        List<Bug> bugs = bugService.findAllUsingNamedEntityGraphs(PageRequest.of(pageNumber, pageSize));
+        Page<Bug> bugs = bugService.findAllUsingNamedEntityGraphs(PageRequest.of(pageNumber, pageSize));
         return bugs;
     }
 }
