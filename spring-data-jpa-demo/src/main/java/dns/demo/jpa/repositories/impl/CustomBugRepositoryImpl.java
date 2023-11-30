@@ -1,10 +1,16 @@
 package dns.demo.jpa.repositories.impl;
 
 import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.PagedList;
+import com.blazebit.persistence.PaginatedCriteriaBuilder;
 import dns.demo.jpa.entities.Bug;
+import dns.demo.jpa.entities.Screenshot;
+import dns.demo.jpa.entities.Tag;
 import dns.demo.jpa.repositories.CustomBugRepository;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -42,7 +48,7 @@ public class CustomBugRepositoryImpl implements CustomBugRepository {
         log.info("Calling findAllWithMultipleOneToManyRelationsJpa...");
         List<Bug> bugs = getAllBugsWithoutTags(pageable);
 
-        final Map<Long, Bug> mapWithTags = entityManager.createQuery("""
+        final Map<Long, List<Tag>> mapWithTags = entityManager.createQuery("""
                         select b from Bug b
                         left join fetch b.tags
                         where b in :bugs
@@ -50,10 +56,10 @@ public class CustomBugRepositoryImpl implements CustomBugRepository {
                 .setParameter("bugs", bugs)
                 .getResultList()
                 .stream()
-                .collect(toMap(Bug::getId, Function.identity()));
+                .collect(toMap(Bug::getId, Bug::getTags));
 
         // Update the missing data
-        bugs.forEach(b -> b.setTags(mapWithTags.get(b.getId()).getTags()));
+        bugs.forEach(b -> b.setTags(mapWithTags.get(b.getId())));
 
         return bugs;
     }
@@ -92,38 +98,60 @@ public class CustomBugRepositoryImpl implements CustomBugRepository {
 
         // Step 2. Fetch the @OneToMany screenshot relation by using the bug ids.
         List<Long> bugIds = bugs.stream().map(Bug::getId).toList();
-        Map<Long, Bug> bugsWithScreenshotsButNoOtherRelations = entityManager.createQuery("""
+        Map<Long, List<Screenshot>> bugsWithScreenshotsButNoOtherRelations = entityManager.createQuery("""
                         select b from Bug b
                         left join fetch b.screenshots
                         where b.id in :bugIds
                         """, Bug.class)
                 .setParameter("bugIds", bugIds)
                 .getResultList()
-                .stream()
-                .collect(toMap(Bug::getId, Function.identity()));
+                .stream().collect(toMap(Bug::getId, Bug::getScreenshots));
 
         // Add the screenshots to the initial query
-        bugs.forEach(b -> b.setScreenshots(bugsWithScreenshotsButNoOtherRelations.get(b.getId()).getScreenshots()));
+        bugs.forEach(b -> b.setScreenshots(bugsWithScreenshotsButNoOtherRelations.get(b.getId())));
 
         return bugs;
     }
 
     @Override
-    public List<Bug> findAllWithMultipleOneToManyRelationsBlazePersistence(Pageable pageable) {
-        int firstResult = pageable.isUnpaged() ? 0 : (int) pageable.getOffset();
-        int maxResults = pageable.isUnpaged() ? Integer.MAX_VALUE : pageable.getPageSize();
+    public Page<Bug> findAllWithMultipleOneToManyRelationsBlazePersistence(Pageable pageable) {
+        int offset = pageable.isUnpaged() ? 0 : (int) pageable.getOffset();
+        int pageSize = pageable.isUnpaged() ? Integer.MAX_VALUE : pageable.getPageSize();
 
-        List<Bug> bugs = criteriaBuilderFactory.create(entityManager, Bug.class, "b")
+        PaginatedCriteriaBuilder<Bug> criteriaBuilder = criteriaBuilderFactory.create(entityManager, Bug.class, "b")
                 .innerJoinFetch("status", "st")
                 .innerJoinFetch("reportedBy", "r")
                 .leftJoinFetch("assignedTo", "a")
                 .leftJoinFetch("verifiedBy", "v")
-                .leftJoinFetch("screenshots", "sc")
-                .leftJoinFetch("tags", "t")
-                .setFirstResult(firstResult)
-                .setMaxResults(maxResults)
-                .getResultList();
+                .page(offset, pageSize)
+                .withCountQuery(true)
+                .withInlineCountQuery(true);
 
-        return bugs;
+        pageable.getSort().forEach(order ->
+                criteriaBuilder.orderBy(order.getProperty(), order.isAscending())
+        );
+
+        PagedList<Bug> bugsPage = criteriaBuilder.getResultList();
+
+        List<Long> bugIds = bugsPage.stream().map(Bug::getId).toList();
+        Map<Long, List<Tag>> idToTagsMap = criteriaBuilderFactory.create(entityManager, Bug.class, "b")
+                .leftJoinFetch("tags", "t")
+                .where("b.id").in(bugIds)
+                .getResultList()
+                .stream().collect(toMap(Bug::getId, Bug::getTags));
+
+        // Set the tags in the bugs list
+        bugsPage.forEach(b -> b.setTags(idToTagsMap.get(b.getId())));
+
+        Map<Long, List<Screenshot>> idToScreenshotsMap = criteriaBuilderFactory.create(entityManager, Bug.class, "b")
+                .leftJoinFetch("screenshots", "sc")
+                .getResultList()
+                .stream().collect(toMap(Bug::getId, Bug::getScreenshots));
+
+        // Set the screenshots in the bugs list
+        bugsPage.forEach(b -> b.setScreenshots(idToScreenshotsMap.get(b.getId())));
+
+        return new PageImpl<>(bugsPage, pageable, bugsPage.getTotalSize());
     }
+
 }

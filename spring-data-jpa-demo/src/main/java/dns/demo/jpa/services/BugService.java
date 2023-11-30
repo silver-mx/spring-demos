@@ -3,6 +3,7 @@ package dns.demo.jpa.services;
 import dns.demo.jpa.entities.Bug;
 import dns.demo.jpa.entities.Screenshot;
 import dns.demo.jpa.repositories.BugRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class BugService {
         return bugRepository.findAllWithMultipleOneToManyRelationsJpa(pageable);
     }
 
-    public List<Bug> getAllBugOptimizedBlazed(Pageable pageable) {
+    public Page<Bug> getAllBugOptimizedBlazed(Pageable pageable) {
         return bugRepository.findAllWithMultipleOneToManyRelationsBlazePersistence(pageable);
     }
 
