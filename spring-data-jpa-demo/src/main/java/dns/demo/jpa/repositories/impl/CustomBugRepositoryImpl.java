@@ -8,7 +8,6 @@ import dns.demo.jpa.entities.Screenshot;
 import dns.demo.jpa.entities.Tag;
 import dns.demo.jpa.entities.TagId;
 import dns.demo.jpa.repositories.CustomBugRepository;
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +15,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
-import static org.hibernate.jpa.SpecHints.HINT_SPEC_FETCH_GRAPH;
 
 @Slf4j
 @Repository

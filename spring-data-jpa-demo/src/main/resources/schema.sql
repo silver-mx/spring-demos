@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS Products;
 
 CREATE TABLE Accounts
 (
-    account_id     BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+    account_id     BIGINT NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
     account_name   VARCHAR(20),
     first_name     VARCHAR(20),
     last_name      VARCHAR(20),
@@ -28,15 +28,15 @@ CREATE TABLE BugStatus
 
 CREATE TABLE Bugs
 (
-    bug_id        BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
-    version       INT DEFAULT 0,
+    bug_id        BIGINT      NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+    version       INT                  DEFAULT 0,
     date_reported DATE        NOT NULL DEFAULT (CURDATE()),
     summary       VARCHAR(80),
     description   VARCHAR(1000),
     resolution    VARCHAR(1000),
-    reported_by   BIGINT UNSIGNED NOT NULL,
-    assigned_to   BIGINT UNSIGNED,
-    verified_by   BIGINT UNSIGNED,
+    reported_by   BIGINT      NOT NULL,
+    assigned_to   BIGINT,
+    verified_by   BIGINT,
     status        VARCHAR(20) NOT NULL DEFAULT 'NEW',
     priority      VARCHAR(20),
     hours         NUMERIC(9, 2),
@@ -48,9 +48,9 @@ CREATE TABLE Bugs
 
 CREATE TABLE Comments
 (
-    comment_id   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
-    bug_id       BIGINT UNSIGNED NOT NULL,
-    author       BIGINT UNSIGNED NOT NULL,
+    comment_id   BIGINT   NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+    bug_id       BIGINT   NOT NULL,
+    author       BIGINT   NOT NULL,
     comment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     comment      TEXT     NOT NULL,
     FOREIGN KEY (bug_id) REFERENCES Bugs (bug_id),
@@ -59,8 +59,8 @@ CREATE TABLE Comments
 
 CREATE TABLE Screenshots
 (
-    bug_id           BIGINT UNSIGNED NOT NULL,
-    image_id         BIGINT UNSIGNED NOT NULL,
+    bug_id           BIGINT NOT NULL,
+    image_id         BIGINT NOT NULL,
     screenshot_image BLOB,
     caption          VARCHAR(100),
     PRIMARY KEY (bug_id, image_id),
@@ -69,7 +69,7 @@ CREATE TABLE Screenshots
 
 CREATE TABLE Tags
 (
-    bug_id BIGINT UNSIGNED NOT NULL,
+    bug_id BIGINT      NOT NULL,
     tag    VARCHAR(20) NOT NULL,
     PRIMARY KEY (bug_id, tag),
     FOREIGN KEY (bug_id) REFERENCES Bugs (bug_id)
@@ -77,14 +77,14 @@ CREATE TABLE Tags
 
 CREATE TABLE Products
 (
-    product_id   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+    product_id   BIGINT NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
     product_name VARCHAR(50)
 );
 
 CREATE TABLE BugsProducts
 (
-    bug_id     BIGINT UNSIGNED NOT NULL,
-    product_id BIGINT UNSIGNED NOT NULL,
+    bug_id     BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
     PRIMARY KEY (bug_id, product_id),
     FOREIGN KEY (bug_id) REFERENCES Bugs (bug_id),
     FOREIGN KEY (product_id) REFERENCES Products (product_id)

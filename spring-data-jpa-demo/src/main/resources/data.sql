@@ -41,5 +41,5 @@ VALUES (1234, 'crash'),
        (1234, 'version-3.0'),
        (1234, 'windows');
 
-INSERT INTO "screenshots" ("bug_id", "image_id", "screenshot_image", "caption")
+INSERT INTO Screenshots (bug_id, image_id, screenshot_image, caption)
 VALUES (1234, 1, 'data', 'Image caption example');
