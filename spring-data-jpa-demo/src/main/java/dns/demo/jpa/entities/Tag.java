@@ -8,6 +8,8 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tags")

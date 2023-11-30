@@ -6,8 +6,11 @@ import com.blazebit.persistence.PaginatedCriteriaBuilder;
 import dns.demo.jpa.entities.Bug;
 import dns.demo.jpa.entities.Screenshot;
 import dns.demo.jpa.entities.Tag;
+import dns.demo.jpa.entities.TagId;
 import dns.demo.jpa.repositories.CustomBugRepository;
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,9 +19,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import static java.util.stream.Collectors.toMap;
+import static org.hibernate.jpa.SpecHints.HINT_SPEC_FETCH_GRAPH;
 
 @Slf4j
 @Repository
@@ -152,6 +155,24 @@ public class CustomBugRepositoryImpl implements CustomBugRepository {
         bugsPage.forEach(b -> b.setScreenshots(idToScreenshotsMap.get(b.getId())));
 
         return new PageImpl<>(bugsPage, pageable, bugsPage.getTotalSize());
+    }
+
+    @Override
+    public Bug addTagWithPessimisticLock(Long id, String tag) {
+        return addTagWithLockMode(id, tag, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+    }
+
+    @Override
+    public Bug addTagWithOptimisticLock(Long id, String tag) {
+        return addTagWithLockMode(id, tag, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+    }
+
+    private Bug addTagWithLockMode(Long id, String tag, LockModeType lockModeType) {
+        Bug bug = entityManager.find(Bug.class, id, lockModeType);
+        TagId tagId = new TagId(bug.getId(), tag);
+        bug.getTags().add(new Tag(tagId, bug));
+
+        return bug;
     }
 
 }

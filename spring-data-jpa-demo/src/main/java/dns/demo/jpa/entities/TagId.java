@@ -10,6 +10,8 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
 @Embeddable
 public class TagId implements Serializable {

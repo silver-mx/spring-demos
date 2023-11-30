@@ -58,7 +58,7 @@ public interface BugRepository extends JpaRepository<Bug, Long>, CustomBugReposi
 
     @Override
     default Optional<Bug> findById(Long id) {
-        return  findBugWithAllRelationsExceptTags(id).map(b -> {
+        return findBugWithAllRelationsExceptTags(id).map(b -> {
             List<Tag> tags = findBugWithTagsAndWithoutOtherRelations(b.getId())
                     .orElseThrow(() -> new IllegalStateException("The bug must exist")).getTags();
             b.setTags(tags);

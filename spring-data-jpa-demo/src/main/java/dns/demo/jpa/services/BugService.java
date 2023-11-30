@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -50,9 +51,9 @@ public class BugService {
      * HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
      *
      * because the first graph ("graph.bug.with-tags") generates a cartesian product and hibernate
-     * has hard time to group during the query, so it needs to be done in memory. This could be solved
-     * splitting the graph into two graphs, one for the root entity and one for the tags. This
-     * is similar to what it is done in other queries or blaze-persistence.
+     * has hard time to group during the query, so the pagination needs to be done in memory.
+     * This could be solved by splitting the graph into two graphs, one for the root entity and one
+     * for the tags. This is similar to what it is done in other queries or blaze-persistence.
      *
      */
     public Page<Bug> findAllUsingNamedEntityGraphs(Pageable pageable) {
@@ -64,5 +65,16 @@ public class BugService {
         bugsWithTags.forEach(b -> b.setScreenshots(idToScreenshotsMap.get(b.getId())));
 
         return new PageImpl<>(bugsWithTags, pageable, bugRepository.count());
+    }
+
+    @Transactional(readOnly = false)
+    public Bug addTagWithPessimisticLock(Long id, String tag) {
+        return bugRepository.addTagWithPessimisticLock(id, tag);
+
+    }
+
+    @Transactional(readOnly = false)
+    public Bug addTagWithOptimisticLock(Long id, String tag) {
+        return bugRepository.addTagWithOptimisticLock(id, tag);
     }
 }

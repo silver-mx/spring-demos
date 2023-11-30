@@ -18,3 +18,9 @@ GET http://localhost:8080/test/bugs-optimized-blazed
 
 ### Fetch all bugs - Entity Graph
 GET http://localhost:8080/test/bugs-entity-graph
+
+### Add tag to bug with pessimistic locking and increase version
+PATCH http://localhost:8080/test/add-tag-pessimistic-lock/1234/pessimitic-new-tag
+
+### Add tag to bug with optimistic locking
+PATCH http://localhost:8080/test/add-tag-optimistic-lock/1234/optimistic-new-tag

@@ -35,6 +35,10 @@ public class Bug {
     @Column(name = "bug_id", nullable = false)
     private Long id;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private Integer version;
+
     @Column(name = "date_reported", nullable = false)
     private LocalDate dateReported;
 

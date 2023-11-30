@@ -29,6 +29,7 @@ CREATE TABLE BugStatus
 CREATE TABLE Bugs
 (
     bug_id        BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+    version       INT DEFAULT 0,
     date_reported DATE        NOT NULL DEFAULT (CURDATE()),
     summary       VARCHAR(80),
     description   VARCHAR(1000),

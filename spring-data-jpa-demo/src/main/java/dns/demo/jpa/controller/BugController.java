@@ -53,4 +53,16 @@ public class BugController {
         Page<Bug> bugs = bugService.findAllUsingNamedEntityGraphs(PageRequest.of(pageNumber, pageSize));
         return bugs;
     }
+
+    @PatchMapping("add-tag-pessimistic-lock/{id}/{tag}")
+    public Bug addTagWithPessimisticLock(@PathVariable("id") Long id, @PathVariable("tag") String tag) {
+        Bug updatedBug = bugService.addTagWithPessimisticLock(id, tag);
+        return bugService.getBugById(updatedBug.getId());
+    }
+
+    @PatchMapping("add-tag-optimistic-lock/{id}/{tag}")
+    public Bug addTagWithOptimisticLock(@PathVariable("id") Long id, @PathVariable("tag") String tag) {
+        Bug updatedBug = bugService.addTagWithOptimisticLock(id, tag);
+        return bugService.getBugById(updatedBug.getId());
+    }
 }
