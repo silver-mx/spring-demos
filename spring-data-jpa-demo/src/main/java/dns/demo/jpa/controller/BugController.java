@@ -1,6 +1,8 @@
 package dns.demo.jpa.controller;
 
+import dns.demo.jpa.dto.BugDto;
 import dns.demo.jpa.entities.Bug;
+import dns.demo.jpa.mapper.BugMapper;
 import dns.demo.jpa.services.BugService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,9 +17,12 @@ import java.util.List;
 public class BugController {
 
     private final BugService bugService;
+    private final BugMapper bugMapper;
 
-    public BugController(BugService bugService) {
+    public BugController(BugService bugService,
+                         BugMapper bugMapper) {
         this.bugService = bugService;
+        this.bugMapper = bugMapper;
     }
 
     @GetMapping("bugs/{id}")
@@ -30,6 +35,12 @@ public class BugController {
     public List<Bug> getAllBugs() {
         List<Bug> bugs = bugService.getAllBugs();
         return bugs;
+    }
+
+    @GetMapping("bugs-optimized-jpa-dto")
+    public List<BugDto> getAllBugOptimizedJpaDto() {
+        return bugService.getAllBugOptimizedJpa(Pageable.ofSize(20).withPage(0))
+                .stream().map(bugMapper::toDto).toList();
     }
 
     @GetMapping("bugs-optimized-jpa")
