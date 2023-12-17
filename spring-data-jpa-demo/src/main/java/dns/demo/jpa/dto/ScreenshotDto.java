@@ -5,5 +5,5 @@ import java.io.Serializable;
 /**
  * DTO for {@link dns.demo.jpa.entities.Screenshot}
  */
-public record ScreenshotDto(String caption) implements Serializable {
+public record ScreenshotDto(ScreenshotIdDto id, String caption) implements Serializable {
 }
