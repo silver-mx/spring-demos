@@ -18,11 +18,11 @@ VALUES ('NEW'),
        ('DUPLICATE'),
        ('WONTFIX');
 
-INSERT INTO Bugs (bug_id, summary, reported_by)
-VALUES (1234, 'crash when I save', 4),
-       (2345, 'increase performance', 3),
-       (3456, 'screen goes blank', 4),
-       (5678, 'unknown conflict between products', 2);
+INSERT INTO Bugs (bug_id, summary, reported_by, date_reported)
+VALUES (1234, 'crash when I save', 4, '2023-12-17'),
+       (2345, 'increase performance', 3, '2023-12-17'),
+       (3456, 'screen goes blank', 4, '2023-12-17'),
+       (5678, 'unknown conflict between products', 2, '2023-12-17');
 
 INSERT INTO BugsProducts (bug_id, product_id)
 VALUES (1234, 1),

@@ -1,0 +1,59 @@
+{
+  "id": 1234,
+  "version": 0,
+  "dateReported": "2023-12-17",
+  "summary": "crash when I save",
+  "description": null,
+  "resolution": null,
+  "reportedBy": {
+    "id": 4,
+    "accountName": "shemp",
+    "firstName": null,
+    "lastName": null,
+    "email": "shemp@example.com",
+    "passwordHash": null,
+    "hourlyRate": null
+  },
+  "assignedTo": null,
+  "verifiedBy": null,
+  "status": {
+    "status": "NEW"
+  },
+  "priority": null,
+  "hours": null,
+  "tags": [
+    {
+      "id": {
+        "bugId": 1234,
+        "tag": "crash"
+      }
+    },
+    {
+      "id": {
+        "bugId": 1234,
+        "tag": "save"
+      }
+    },
+    {
+      "id": {
+        "bugId": 1234,
+        "tag": "version-3.0"
+      }
+    },
+    {
+      "id": {
+        "bugId": 1234,
+        "tag": "windows"
+      }
+    }
+  ],
+  "screenshots": [
+    {
+      "id": {
+        "bugId": 1234,
+        "imageId": 1
+      },
+      "caption": "Image caption example"
+    }
+  ]
+}
