@@ -1,6 +1,14 @@
 server:
   port: 8888
 
+# Register config server to the service discovery server so other services find this one
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
 spring:
   application:
     name: config-service
@@ -8,9 +16,5 @@ spring:
     config:
       server:
         git:
-          uri: file://${user.home}/config-repo
+          uri: file:///${user.home}/wa/spring-config-server-data-repo
           clone-on-start: true
-      fail-fast: true
-  config:
-    import: "configserver:http://localhost:${server.port}/?fail-fast=true&max-attempts=10&max-interval=1500&multiplier=1.2&initial-interval=1100"
-

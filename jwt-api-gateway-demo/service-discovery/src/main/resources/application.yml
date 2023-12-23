@@ -1,10 +1,17 @@
 server:
   port: 8761
 
+spring:
+  cloud:
+    config:
+      enabled: false
+
 eureka:
   instance:
     hostname: localhost
   client:
+# Switch off client behavior for Eureka to try to connect to other peers (other Eureka servers)
+# See: https://docs.spring.io/spring-cloud-netflix/reference/spring-cloud-netflix.html#spring-cloud-eureka-server-standalone-mode
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
