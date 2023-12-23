@@ -1,10 +1,10 @@
-package demo;
+package dns.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AuthenticationApplicationTest {
+class ConfigServerApplicationTest {
 
     @Test
     void contextLoads() {
