@@ -1,0 +1,46 @@
+### Register User
+POST {{auth-service}}/register-user
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "pass",
+  "roles": ["read", "write"]
+}
+
+### Generate JWT token
+POST {{auth-service}}/token
+Content-Type: application/json
+Authorization: Basic user pass
+
+{
+  "username": "user",
+  "password": "pass"
+}
+> {% client.global.set("auth_token", response.body.token) %}
+
+### Generate JWT token
+POST {{auth-service}}/token
+Content-Type: application/json
+Authorization: Basic dnunez pass
+
+{
+  "username": "dnunez",
+  "password": "pass"
+}
+> {% client.global.set("auth_token", response.body.token) %}
+
+
+### Access home endpoint
+GET {{auth-service}}
+Authorization: Bearer {{auth_token}}
+
+
+### Access secured endpoint read authority
+GET {{auth-service}}/secured-read
+Authorization: Bearer {{auth_token}}
+
+### Access secured endpoint write authority
+GET {{auth-service}}/secured-write
+Authorization: Bearer {{auth_token}}
+
