@@ -1,1 +1,8 @@
 spring.cloud.config.enabled: false
+
+application:
+  service-names:
+    "[AUTHENTICATION]": auth-service
+    "[USER]": user-service
+  open-endpoints:
+    - /auth/token
