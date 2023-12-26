@@ -2,9 +2,9 @@ package dns.demo.gateway.config;
 
 import dns.demo.gateway.service.AuthenticationClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -12,15 +12,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
 @Slf4j
-@RefreshScope
 @Component
-public class AuthenticationFilter implements GatewayFilter {
+public class AuthenticationGlobalFilter implements GlobalFilter, Ordered {
 
     private final RouterValidator validator;
     private final AuthenticationClient authenticationClient;
 
-    public AuthenticationFilter(RouterValidator validator, AuthenticationClient authenticationClient) {
+    public AuthenticationGlobalFilter(RouterValidator validator, AuthenticationClient authenticationClient) {
         this.validator = validator;
         this.authenticationClient = authenticationClient;
     }
@@ -29,9 +30,14 @@ public class AuthenticationFilter implements GatewayFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
+        log.info("Filtering request[method={}, uri={}]", request.getMethod(), request.getURI());
+
         if (validator.isSecuredEndpoint(request)) {
+
+            log.info ("Request[method={}, uri={}] needs authentication", request.getMethod(), request.getURI());
+
             if (authMissing(request)) {
-                return onError(exchange, HttpStatus.UNAUTHORIZED);
+                return onError(exchange, UNAUTHORIZED);
             }
 
             String token = request.getHeaders()
@@ -39,16 +45,20 @@ public class AuthenticationFilter implements GatewayFilter {
 
             return authenticationClient.isJwtValid(token)
                     .flatMap(isValid -> {
+
                         log.info("Is JWT valid={}", isValid);
 
                         if (isValid) {
                             return chain.filter(exchange);
                         }
 
-                        return onError(exchange, HttpStatus.UNAUTHORIZED);
+                        return onError(exchange, UNAUTHORIZED);
 
                     });
         }
+
+        log.info("Request[method={}, uri={}] is an open endpoint, no authentication needed", request.getMethod(), request.getURI());
+
         return chain.filter(exchange);
     }
 
@@ -62,4 +72,8 @@ public class AuthenticationFilter implements GatewayFilter {
         return !request.getHeaders().containsKey("Authorization");
     }
 
+    @Override
+    public int getOrder() {
+        return -1;
+    }
 }

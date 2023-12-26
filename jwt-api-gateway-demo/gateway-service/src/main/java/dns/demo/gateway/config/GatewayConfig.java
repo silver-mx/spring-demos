@@ -2,19 +2,19 @@ package dns.demo.gateway.config;
 
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class GatewayConfig {
 
-    private final AuthenticationFilter filter;
+    private final AuthenticationGatewayFilter filter;
 
-    public GatewayConfig(AuthenticationFilter filter) {
+    public GatewayConfig(AuthenticationGatewayFilter filter) {
         this.filter = filter;
     }
 
-    @Bean
+    /* Unused at the moment as a AuthenticationGlobalFilter was created.*/
+    // @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("user-service", r -> r.path("/users/**")

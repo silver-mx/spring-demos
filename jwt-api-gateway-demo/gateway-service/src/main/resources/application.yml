@@ -29,11 +29,10 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: auth-service
-          uri: http://localhost:9090/
+        - id: authentication
+          uri: lb://auth-service
           predicates:
-            - Path=/auth/token,/auth/register-user
-            - Method=POST
+            - Path=/auth/**
 
   # Use service discovery (spring.cloud.config.discovery.enabled=true) instead of the manual config server url
   config:
