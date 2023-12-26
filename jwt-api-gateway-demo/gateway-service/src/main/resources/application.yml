@@ -30,7 +30,7 @@ spring:
           enabled: true
       routes:
         - id: authentication
-          uri: lb://auth-service
+          uri: lb://${application.service-names.[AUTHENTICATION]}
           predicates:
             - Path=/auth/**
 
