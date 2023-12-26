@@ -1,5 +1,28 @@
+### Gateway - Register User
+POST {{gateway}}/auth/register-user
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "pass",
+  "roles": ["read", "write"]
+}
+
+### Gateway - Generate JWT token
+POST {{gateway}}/auth/token
+Content-Type: application/json
+Authorization: Basic dnunez pass
+
+{
+  "username": "dnunez",
+  "password": "pass"
+}
+> {% client.global.set("auth_token", response.body.token) %}
+
+
 ### Register User
-POST {{auth-service}}/register-user
+POST {{auth-service}}/auth/register-user
 Content-Type: application/json
 
 {
@@ -9,18 +32,7 @@ Content-Type: application/json
 }
 
 ### Generate JWT token
-POST {{auth-service}}/token
-Content-Type: application/json
-Authorization: Basic user pass
-
-{
-  "username": "user",
-  "password": "pass"
-}
-> {% client.global.set("auth_token", response.body.token) %}
-
-### Generate JWT token
-POST {{auth-service}}/token
+POST {{auth-service}}/auth/token
 Content-Type: application/json
 Authorization: Basic dnunez pass
 

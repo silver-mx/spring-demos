@@ -1,0 +1,41 @@
+server:
+  port: 8081
+
+application:
+  service-names:
+    "[AUTHENTICATION]": auth-service
+    "[USER]": user-service
+  open-endpoints:
+    - /auth/token
+
+# For service discovery
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        serviceId: config-service
+    gateway:
+      metrics:
+        enabled: true
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: auth-service
+          uri: http://localhost:9090/
+          predicates:
+            - Path=/auth/token,/auth/register-user
+            - Method=POST
+
+  # Use service discovery (spring.cloud.config.discovery.enabled=true) instead of the manual config server url
+  config:
+    import: 'configserver:'
+

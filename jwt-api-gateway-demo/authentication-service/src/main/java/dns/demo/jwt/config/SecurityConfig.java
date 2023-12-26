@@ -42,7 +42,6 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(User
                 .withUsername("dnunez")
                 .password("{noop}pass")
-                .authorities("read")
                 .build());
     }
 
@@ -78,7 +77,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/token", "/register-user").permitAll()
+                                .requestMatchers("/auth/token").permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oAuth2ResourceServerConfigurer ->
                         oAuth2ResourceServerConfigurer.jwt(Customizer.withDefaults()))
