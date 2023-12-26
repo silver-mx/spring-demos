@@ -8,6 +8,5 @@ class GatewayApplicationTest {
 
     @Test
     void contextLoads() {
-
     }
 }
