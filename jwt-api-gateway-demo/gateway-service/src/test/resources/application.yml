@@ -1,4 +1,5 @@
-spring.cloud.config.enabled: false
+server:
+  port: 8081
 
 application:
   service-names:
@@ -6,3 +7,31 @@ application:
     "[USER]": user-service
   open-endpoints:
     - /auth/token
+
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      enabled: false
+    gateway:
+      metrics:
+        enabled: true
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: authentication
+          uri: lb://${application.service-names.[AUTHENTICATION]}
+          predicates:
+            - Path=/auth/**
+

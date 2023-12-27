@@ -19,7 +19,7 @@ public class AuthenticationClient {
         String authServiceName = properties.getServiceNames().get(ServiceName.AUTHENTICATION);
         // See WebClientConfig to see how the webClientBuilder is configured as load balanced.
         this.webClient = loadBalancedWebClientBuilder
-                .baseUrl("lb://" + authServiceName + "/auth/validate-jwt")
+                .baseUrl("http://" + authServiceName + "/auth/validate-jwt")
                 .build();
     }
 
@@ -28,7 +28,13 @@ public class AuthenticationClient {
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(jwtToken))
                 .retrieve()
                 .bodyToMono(Void.class)
-                .then(Mono.defer(() -> Mono.just(true)))
-                .onErrorResume(WebClientException.class, e -> Mono.just(false));
+                .then(Mono.defer(() -> {
+                    log.info("Got a positive response from auth-service for the JWT validation.");
+                    return Mono.just(true);
+                }))
+                .onErrorResume(WebClientException.class, e -> {
+                    log.error("Got error from auth-service", e);
+                    return Mono.just(false);
+                });
     }
 }

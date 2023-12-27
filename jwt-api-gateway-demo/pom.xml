@@ -79,6 +79,28 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.maciejwalkowiak.spring</groupId>
+            <artifactId>wiremock-spring-boot</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+            <!-- The exclusion and inclusion of wiremock-standalone is to deal with
+             https://github.com/maciejwalkowiak/wiremock-spring-boot/issues/21
+             that affects Spring Boot 3.2
+             -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.wiremock</groupId>
+                    <artifactId>wiremock</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>3.3.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
