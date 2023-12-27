@@ -1,3 +1,6 @@
+### Gateway - Info actuator
+GET {{gateway}}/actuator/health
+
 ### Gateway - Register User
 POST {{gateway}}/auth/register-user
 Authorization: Bearer {{auth_token}}

@@ -16,6 +16,6 @@ spring:
     config:
       server:
         git:
-          uri: file:///${user.home}/wa/spring-config-server-data-repo
-          #uri: https://github.com/silver-mx/spring-config-server-data-repo
+          #uri: file:///${user.home}/wa/spring-config-server-data-repo
+          uri: https://github.com/silver-mx/spring-config-server-data-repo
           clone-on-start: true
