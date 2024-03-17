@@ -1,5 +1,6 @@
 package dns.demo;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONCompare;
@@ -24,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.http.HttpStatus.OK;
 
+@Slf4j
 @Testcontainers
 @ExtendWith(OutputCaptureExtension.class)
 @SpringBootTest(classes = TestConfig.class)
@@ -58,6 +60,7 @@ class ObservabilitySpringDemoApplicationTests {
                 """;
         await().atMost(Duration.ofMinutes(1)).until(() -> {
             ResponseEntity<String> tempoResponse = restTemplate.getForEntity("http://localhost:3200/api/search/tag/service.name/values", String.class);
+            log.info("Tempo response={}", tempoResponse.getBody());
             return nonNull(tempoResponse.getBody())
                     && JSONCompare.compareJSON(expectedTempoJson, tempoResponse.getBody(), JSONCompareMode.STRICT).passed();
         });
