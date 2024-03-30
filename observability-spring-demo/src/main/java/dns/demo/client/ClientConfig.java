@@ -3,7 +3,6 @@ package dns.demo.client;
 import dns.demo.client.post.PostClient;
 import dns.demo.common.CommonConfig;
 import dns.demo.common.post.Post;
-import dns.demo.server.ServerConfig;
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.annotation.Observed;
 import lombok.extern.slf4j.Slf4j;
